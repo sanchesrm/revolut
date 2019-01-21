@@ -1,0 +1,18 @@
+{
+	"extends": [
+		"eslint:recommended",
+		"plugin:react/recommended"
+	],
+	"parser": "babel-eslint",  
+	"settings": {
+		"react": {
+			"version": "^16.7.0"
+		}
+	},
+	"env": {
+		"browser": true,
+		"node": true,
+		"es6": true,
+		"mocha": true
+	}
+}
