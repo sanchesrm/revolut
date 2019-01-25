@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import { Container, Header, Image, Button } from "semantic-ui-react";
+import { Container, Header, Image, Button, Message } from "semantic-ui-react";
 import CurrencyContent from "../components/CurrencyContent";
+import { fetchRates, getRatesExchanges } from "../actions/Rates";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import Logo from "../assets/imgs/logo.png";
 
 const styles = {
@@ -20,20 +23,98 @@ const styles = {
   }
 };
 
-class App extends Component {
-  constructor() {
+export class App extends Component {
+  constructor(props) {
+    super(props);
+
     this.state = {
-      choosenCurrency: { 0: }
-    }
+      choosenCurrency: ["GBP", "USD"],
+      currencyAmounts: {
+        GBP: this.randomCurrencyAmounts(),
+        EUR: this.randomCurrencyAmounts(),
+        USD: this.randomCurrencyAmounts()
+      },
+      inputValues: { 0: "0.00", 1: "0.00" },
+      hideError: true
+    };
   }
-  handleCurrencyChoose = (name, tabIndex) => {
-    console.log(tabIndex);
-    console.log(name);
-    let choosenCurrency = this.state.choosenCurrency
-    this.setState({ choosenCurrency: });
+
+  componentDidMount() {
+    this.props.fetchRates(this.state.choosenCurrency);
+    setInterval(() => {
+      this.props.fetchRates(this.state.choosenCurrency);
+    }, 10000);
+  }
+
+  randomCurrencyAmounts = () => {
+    return parseFloat((Math.random() * (100 - 0) + 0).toFixed(2));
+  };
+
+  handleCurrencyChoose = (name, position) => {
+    let choosenCurrency = this.state.choosenCurrency;
+    if (!choosenCurrency.includes(name)) {
+      choosenCurrency[position] = name;
+      this.setState({ choosenCurrency }, () => {
+        this.props.getRatesExchanges(
+          this.state.choosenCurrency,
+          this.props.RatesReducer
+        );
+      });
+    }
+  };
+
+  changeHandler = (value, position) => {
+    const oppositePosition = !position ? 1 : 0;
+    let { inputValues } = this.state;
+    inputValues[position] = parseFloat(value);
+    inputValues[oppositePosition] =
+      -1 * value * this.props.RatesReducer.exchangesRates[position];
+
+    this.setState({ inputValues });
+  };
+
+  exchangeClickHandler = () => {
+    let { choosenCurrency, currencyAmounts, inputValues } = this.state;
+
+    let firstValue = currencyAmounts[choosenCurrency[0]] + inputValues[0];
+    let secondValue = currencyAmounts[choosenCurrency[1]] + inputValues[1];
+
+    firstValue = firstValue.toFixed(2);
+    secondValue = secondValue.toFixed(2);
+
+    if (firstValue < 0 || secondValue < 0) {
+      this.setState(
+        {
+          hideError: false
+        },
+        () => {
+          setTimeout(() => {
+            this.setState({
+              hideError: true
+            });
+          }, 3000);
+        }
+      );
+    } else {
+      currencyAmounts[choosenCurrency[0]] = parseFloat(firstValue);
+      currencyAmounts[choosenCurrency[1]] = parseFloat(secondValue);
+
+      inputValues = { 0: "0.00", 1: "0.00" };
+
+      this.setState({
+        currencyAmounts,
+        inputValues
+      });
+    }
   };
 
   render() {
+    const {
+      inputValues,
+      choosenCurrency,
+      currencyAmounts,
+      hideError
+    } = this.state;
     return (
       <div style={styles.divStyle}>
         <Container
@@ -45,24 +126,50 @@ class App extends Component {
           </Header>
 
           <CurrencyContent
-            primaryColor={"#1c5aff"}
-            secondaryColor={"#265ed2"}
-            autoFocus={true}
-            tabIndex={1}
+            position={0}
             handleCurrencyChoose={this.handleCurrencyChoose}
+            choosenCurrency={choosenCurrency}
+            amount={currencyAmounts[choosenCurrency[0]]}
+            changeHandler={this.changeHandler}
+            inputValue={inputValues[0]}
           />
           <CurrencyContent
-            primaryColor={"#265ed2"}
-            secondaryColor={"#1c5aff"}
-            autoFocus={false}
-            tabIndex={2}
+            position={1}
             handleCurrencyChoose={this.handleCurrencyChoose}
+            choosenCurrency={choosenCurrency}
+            amount={currencyAmounts[choosenCurrency[1]]}
+            changeHandler={this.changeHandler}
+            inputValue={inputValues[1]}
           />
-          <Button style={styles.buttonStyle} content="Exchange" primary />
+          <Button
+            style={styles.buttonStyle}
+            content="Exchange"
+            onClick={this.exchangeClickHandler}
+            primary
+          />
+          <Message
+            style={{ marginTop: "20px" }}
+            color="red"
+            error={true}
+            hidden={hideError}
+          >
+            Operation not permitted
+          </Message>
         </Container>
       </div>
     );
   }
 }
 
-export default App;
+export const mapStateToProps = ({ RatesReducer }) => {
+  return { RatesReducer };
+};
+
+export const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ fetchRates, getRatesExchanges }, dispatch);
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

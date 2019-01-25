@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login Component render correctly 1`] = `
+<div
+  style={
+    Object {
+      "backgroundColor": "#1881ec",
+      "height": "100%",
+      "position": "absolute",
+      "width": "100%",
+    }
+  }
+>
+  <Container
+    style={
+      Object {
+        "marginTop": "100px",
+        "width": "600px",
+      }
+    }
+    textAlign="center"
+  >
+    <Header
+      style={
+        Object {
+          "marginBottom": "15px",
+        }
+      }
+      textAlign="center"
+    >
+      <Image
+        as="img"
+        src="logo.png"
+        style={
+          Object {
+            "width": "150px",
+          }
+        }
+        ui={true}
+      />
+    </Header>
+    <Connect(CurrencyContent)
+      amount={4.91}
+      changeHandler={[Function]}
+      choosenCurrency={
+        Array [
+          "GBP",
+          "USD",
+        ]
+      }
+      handleCurrencyChoose={[Function]}
+      inputValue="0.00"
+      position={0}
+    />
+    <Connect(CurrencyContent)
+      amount={32.44}
+      changeHandler={[Function]}
+      choosenCurrency={
+        Array [
+          "GBP",
+          "USD",
+        ]
+      }
+      handleCurrencyChoose={[Function]}
+      inputValue="0.00"
+      position={1}
+    />
+    <Button
+      as="button"
+      content="Exchange"
+      onClick={[Function]}
+      primary={true}
+      style={
+        Object {
+          "backgroundImage": "linear-gradient(to right, rgba(0, 128, 0, 0.5), rgba(0, 128, 0, 0.7)",
+          "fontSize": "20px",
+          "height": "50px",
+          "marginTop": "40px",
+          "width": "300px",
+        }
+      }
+    />
+    <Message
+      color="red"
+      error={true}
+      hidden={true}
+      style={
+        Object {
+          "marginTop": "20px",
+        }
+      }
+    >
+      Operation not permitted
+    </Message>
+  </Container>
+</div>
+`;

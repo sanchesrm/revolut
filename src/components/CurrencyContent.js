@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import { Menu, Segment, Input, Form } from "semantic-ui-react";
+import { Menu, Segment, Input } from "semantic-ui-react";
 import PropTypes from "prop-types";
+import { currenciesAvailable, currenciesSymbols } from "../config";
+import CurrencyInput from "react-currency-input";
+import { connect } from "react-redux";
 
 const style = {
   borderNone: {
@@ -24,25 +27,54 @@ const style = {
     borderRadius: "25px",
     padding: "15px",
     boxShadow: "5px 10px"
-  }
+  },
+  lightBlueColor: "#1c5aff",
+  darkBlueColor: "#265ed2"
 };
 
-const currenciesAvailable = ["GBP", "EUR", "USD"];
+export class CurrencyContent extends Component {
+  getCurrencyParse = () => {
+    const { choosenCurrency, position, RatesReducer } = this.props;
 
-class App extends Component {
-  renderInput = () => {
+    const firstCurrency = choosenCurrency[0];
+    const secondCurrency = choosenCurrency[1];
+
+    const firstSymbol = currenciesSymbols[firstCurrency];
+    const secondSymbol = currenciesSymbols[secondCurrency];
+
+    const exchangeRates = this.props.RatesReducer.exchangesRates
+      ? RatesReducer.exchangesRates[position].toFixed(2)
+      : 1;
     return (
-      <input type="text" style={{ textAlign: "start", direction: "rtl" }} />
+      <div style={style.currencySubheader}>{`${
+        position === 0 ? firstSymbol : secondSymbol
+      } 1.00 - ${
+        position === 0 ? secondSymbol : firstSymbol
+      } ${exchangeRates}`}</div>
     );
   };
+
   render() {
+    const {
+      choosenCurrency,
+      position,
+      handleCurrencyChoose,
+      amount,
+      changeHandler,
+      inputValue
+    } = this.props;
+    const whichCurrency = choosenCurrency[position];
+
+    const [primaryColor, secondaryColor] =
+      position === 0
+        ? [style.lightBlueColor, style.darkBlueColor]
+        : [style.darkBlueColor, style.lightBlueColor];
+
     return (
       <div
         style={{
           ...style.divStyle,
-          backgroundImage: `linear-gradient(to right, ${
-            this.props.primaryColor
-          }, ${this.props.secondaryColor})`
+          backgroundImage: `linear-gradient(to right, ${primaryColor}, ${secondaryColor})`
         }}
       >
         <Menu
@@ -60,32 +92,44 @@ class App extends Component {
               <Menu.Item
                 name={currency}
                 key={currency}
-                active={currency === this.props.choosenCurrency}
-                onClick={(undefined, { name }) =>
-                  this.props.handleCurrencyChoose(name, this.props.tabIndex)
-                }
+                active={currency === whichCurrency}
+                onClick={(e, { name }) => handleCurrencyChoose(name, position)}
               />
             );
           })}
         </Menu>
         <Segment.Group horizontal style={style.segmentGroup}>
           <Segment textAlign="left" padded="very" style={style.borderNone}>
-            <div style={style.currencyHeader}>Left</div>
-            <div style={style.currencySubheader}>You have: $13.00</div>
+            <div style={style.currencyHeader}>{whichCurrency}</div>
+            <div style={style.currencySubheader}>
+              You have:
+              <span style={{ fontWeight: 600 }}>
+                {` ${currenciesSymbols[whichCurrency]} ${amount}`}
+              </span>
+            </div>
           </Segment>
 
           <Segment textAlign="right" padded="very" style={style.borderNone}>
             <Input
-              style={{ display: "block", textAlign: "start", direction: "rtl" }}
               size="massive"
-              autoFocus={this.props.autoFocus}
-              transparent
               inverted
-              labelPosition={"right"}
-              tabIndex={this.props.tabIndex}
-              input={<input style={{ textAlign: "start", direction: "rtl" }} />}
+              transparent
+              tabIndex={position + 1}
+              style={{ width: "110px" }}
+              input={
+                <CurrencyInput
+                  decimalSeparator={"."}
+                  thousandSeparator={""}
+                  allowNegative={true}
+                  precision={2}
+                  onChangeEvent={(e, data) => {
+                    changeHandler(data, position);
+                  }}
+                  value={inputValue}
+                />
+              }
             />
-            <div style={style.currencySubheader}>U$ 1.00 = L 1.00</div>
+            {this.getCurrencyParse()}
           </Segment>
         </Segment.Group>
       </div>
@@ -93,13 +137,18 @@ class App extends Component {
   }
 }
 
-App.propTypes = {
-  primaryColor: PropTypes.string,
-  secondaryColor: PropTypes.string,
-  choosenCurrency: PropTypes.string,
-  autoFocus: PropTypes.bool,
-  tabIndex: PropTypes.number,
-  handleCurrencyChoose: PropTypes.func
+CurrencyContent.propTypes = {
+  choosenCurrency: PropTypes.array.isRequired,
+  position: PropTypes.number.isRequired,
+  handleCurrencyChoose: PropTypes.func.isRequired,
+  changeHandler: PropTypes.func.isRequired,
+  inputValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
+  amount: PropTypes.number.isRequired
 };
 
-export default App;
+export const mapStateToProps = ({ RatesReducer, exchangesRates }) => {
+  return { RatesReducer, exchangesRates };
+};
+
+export default connect(mapStateToProps)(CurrencyContent);

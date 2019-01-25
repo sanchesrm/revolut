@@ -1,0 +1,301 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login Component render correctly 1`] = `
+<div
+  style={
+    Object {
+      "backgroundImage": "linear-gradient(to right, #1c5aff, #265ed2)",
+      "borderRadius": "25px",
+      "boxShadow": "5px 10px",
+      "height": "250px",
+      "marginTop": "25px",
+      "padding": "15px",
+    }
+  }
+>
+  <Menu
+    another="first"
+    borderless={true}
+    fluid={true}
+    inverted={true}
+    pointing={true}
+    secondary={true}
+    style={
+      Object {
+        "borderWidth": "0px",
+        "fontSize": "18px",
+      }
+    }
+    widths={3}
+  >
+    <MenuItem
+      active={true}
+      key="GBP"
+      name="GBP"
+      onClick={[Function]}
+    />
+    <MenuItem
+      active={false}
+      key="EUR"
+      name="EUR"
+      onClick={[Function]}
+    />
+    <MenuItem
+      active={false}
+      key="USD"
+      name="USD"
+      onClick={[Function]}
+    />
+  </Menu>
+  <SegmentGroup
+    horizontal={true}
+    style={
+      Object {
+        "backgroundColor": "rgba(255, 255, 255, 0)",
+        "border": "none",
+        "boxShadow": "none",
+        "color": "white",
+      }
+    }
+  >
+    <Segment
+      padded="very"
+      style={
+        Object {
+          "border": "none",
+        }
+      }
+      textAlign="left"
+    >
+      <div
+        style={
+          Object {
+            "display": "block",
+            "fontSize": "35px",
+            "lineHeight": "27px",
+          }
+        }
+      >
+        GBP
+      </div>
+      <div
+        style={
+          Object {
+            "fontSize": "18px",
+            "marginTop": "20px",
+          }
+        }
+      >
+        You have:
+        <span
+          style={
+            Object {
+              "fontWeight": 600,
+            }
+          }
+        >
+           £ 0
+        </span>
+      </div>
+    </Segment>
+    <Segment
+      padded="very"
+      style={
+        Object {
+          "border": "none",
+        }
+      }
+      textAlign="right"
+    >
+      <Input
+        input={
+          <CurrencyInput
+            allowNegative={true}
+            autoFocus={false}
+            decimalSeparator="."
+            inputType="text"
+            onChange={[Function]}
+            onChangeEvent={[Function]}
+            precision={2}
+            prefix=""
+            selectAllOnFocus={false}
+            suffix=""
+            thousandSeparator=""
+            value={1234}
+          />
+        }
+        inverted={true}
+        size="massive"
+        style={
+          Object {
+            "width": "110px",
+          }
+        }
+        tabIndex={1}
+        transparent={true}
+        type="text"
+      />
+      <div
+        style={
+          Object {
+            "fontSize": "18px",
+            "marginTop": "20px",
+          }
+        }
+      >
+        £ 1.00 - $ 1.00
+      </div>
+    </Segment>
+  </SegmentGroup>
+</div>
+`;
+
+exports[`Login Component render correctly 2`] = `
+<div
+  style={
+    Object {
+      "backgroundImage": "linear-gradient(to right, #265ed2, #1c5aff)",
+      "borderRadius": "25px",
+      "boxShadow": "5px 10px",
+      "height": "250px",
+      "marginTop": "25px",
+      "padding": "15px",
+    }
+  }
+>
+  <Menu
+    another="first"
+    borderless={true}
+    fluid={true}
+    inverted={true}
+    pointing={true}
+    secondary={true}
+    style={
+      Object {
+        "borderWidth": "0px",
+        "fontSize": "18px",
+      }
+    }
+    widths={3}
+  >
+    <MenuItem
+      active={false}
+      key="GBP"
+      name="GBP"
+      onClick={[Function]}
+    />
+    <MenuItem
+      active={false}
+      key="EUR"
+      name="EUR"
+      onClick={[Function]}
+    />
+    <MenuItem
+      active={true}
+      key="USD"
+      name="USD"
+      onClick={[Function]}
+    />
+  </Menu>
+  <SegmentGroup
+    horizontal={true}
+    style={
+      Object {
+        "backgroundColor": "rgba(255, 255, 255, 0)",
+        "border": "none",
+        "boxShadow": "none",
+        "color": "white",
+      }
+    }
+  >
+    <Segment
+      padded="very"
+      style={
+        Object {
+          "border": "none",
+        }
+      }
+      textAlign="left"
+    >
+      <div
+        style={
+          Object {
+            "display": "block",
+            "fontSize": "35px",
+            "lineHeight": "27px",
+          }
+        }
+      >
+        USD
+      </div>
+      <div
+        style={
+          Object {
+            "fontSize": "18px",
+            "marginTop": "20px",
+          }
+        }
+      >
+        You have:
+        <span
+          style={
+            Object {
+              "fontWeight": 600,
+            }
+          }
+        >
+           $ 0
+        </span>
+      </div>
+    </Segment>
+    <Segment
+      padded="very"
+      style={
+        Object {
+          "border": "none",
+        }
+      }
+      textAlign="right"
+    >
+      <Input
+        input={
+          <CurrencyInput
+            allowNegative={true}
+            autoFocus={false}
+            decimalSeparator="."
+            inputType="text"
+            onChange={[Function]}
+            onChangeEvent={[Function]}
+            precision={2}
+            prefix=""
+            selectAllOnFocus={false}
+            suffix=""
+            thousandSeparator=""
+            value={1234}
+          />
+        }
+        inverted={true}
+        size="massive"
+        style={
+          Object {
+            "width": "110px",
+          }
+        }
+        tabIndex={2}
+        transparent={true}
+        type="text"
+      />
+      <div
+        style={
+          Object {
+            "fontSize": "18px",
+            "marginTop": "20px",
+          }
+        }
+      >
+        $ 1.00 - £ 1
+      </div>
+    </Segment>
+  </SegmentGroup>
+</div>
+`;
