@@ -14,7 +14,7 @@ export const fetchRates = choosenCurrecies => dispatch => {
     promises.push(axios.get(`${url}${currency}`));
   });
 
-  Promise.all(promises).then(data => {
+  return Promise.all(promises).then(data => {
     let returnObj = {};
     data.forEach(item => {
       returnObj = { ...returnObj, [item.data.base]: item.data.rates };

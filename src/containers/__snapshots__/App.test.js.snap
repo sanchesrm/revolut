@@ -40,7 +40,7 @@ exports[`Login Component render correctly 1`] = `
       />
     </Header>
     <Connect(CurrencyContent)
-      amount={4.91}
+      amount={21.23}
       changeHandler={[Function]}
       choosenCurrency={
         Array [
@@ -53,7 +53,7 @@ exports[`Login Component render correctly 1`] = `
       position={0}
     />
     <Connect(CurrencyContent)
-      amount={32.44}
+      amount={11.71}
       changeHandler={[Function]}
       choosenCurrency={
         Array [

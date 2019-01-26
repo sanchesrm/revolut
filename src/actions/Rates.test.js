@@ -1,29 +1,71 @@
-// import Adapter from "enzyme-adapter-react-16";
-// import { configure } from "enzyme";
-// import { RATES_ACTIONS, fetchRates, getRatesExchanges } from "./Rates";
-// import mockAxios from "axios";
+import Adapter from "enzyme-adapter-react-16";
+import { configure } from "enzyme";
+import { RATES_ACTIONS, fetchRates, getRatesExchanges } from "./Rates";
+import { RATES_EXCHANGES_API, currenciesAvailable } from "../config";
+import mockAxios from "axios";
+import reduxThunk from "redux-thunk";
+import configureMockStore from "redux-mock-store";
 
-// describe("Rates Component", () => {
-//   let props;
-//   beforeEach(() => {
-//     configure({ adapter: new Adapter() });
-//   });
+const middlewares = [reduxThunk];
+const mockStore = configureMockStore(middlewares);
 
-//   test("call fetchRates correctly", () => {
-//     expect.assertions(2);
+describe("Rates Component", () => {
+  let store;
+  beforeEach(() => {
+    configure({ adapter: new Adapter() });
+    store = mockStore();
+  });
 
-//     mockAxios.get.mockImplementation(() =>
-//       Promise.resolve({
-//         data: {}
-//       })
-//     );
+  test("call fetchRates correctly", done => {
+    expect.assertions(4);
 
-//     const createUserReturn = createUser("asdf");
+    mockAxios.get
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            base: "USD",
+            rates: {
+              GBP: 1,
+              EUR: 1
+            }
+          }
+        })
+      )
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            base: "GBP",
+            rates: {
+              USD: 1,
+              EUR: 1
+            }
+          }
+        })
+      )
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            base: "EUR",
+            rates: {
+              GBP: 1,
+              USD: 1
+            }
+          }
+        })
+      );
 
-//     expect(mockAxios.post).toHaveBeenCalledWith(`${ROOT_URL}/createUser`, {
-//       username: "asdf"
-//     });
-//     const { type } = createUserReturn;
-//     expect(type).toEqual(USER_ACTIONS.CREATE_USER);
-//   });
-// });
+    store.dispatch(fetchRates(["GBP", "USD"])).then(() => {
+      expect(mockAxios.get).toHaveBeenCalledWith(`${RATES_EXCHANGES_API}USD`);
+      expect(mockAxios.get).toHaveBeenCalledWith(`${RATES_EXCHANGES_API}EUR`);
+      expect(mockAxios.get).toHaveBeenCalledWith(`${RATES_EXCHANGES_API}GBP`);
+
+      let types = [];
+      store.getActions().forEach(action => {
+        types = [...types, action.type];
+      });
+
+      expect(types).toEqual(["FETCH_RATES", "RATES_EXCHANGES"]);
+      done();
+    });
+  });
+});
