@@ -14,14 +14,6 @@ describe("Login Component", () => {
     };
   });
 
-  test("render correctly", () => {
-    expect.assertions(1);
-
-    const wrapper = shallow(<App {...props} />);
-
-    expect(toJson(wrapper)).toMatchSnapshot();
-  });
-
   test("should generate random number", () => {
     expect.assertions(1);
 
