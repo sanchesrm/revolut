@@ -10,7 +10,7 @@ const styles = {
   buttonStyle: {
     width: "300px",
     height: "50px",
-    marginTop: "40px",
+    marginTop: "25px",
     backgroundImage:
       "linear-gradient(to right, rgba(0, 128, 0, 0.5), rgba(0, 128, 0, 0.7)",
     fontSize: "20px"
@@ -119,7 +119,7 @@ export class App extends Component {
       <div style={styles.divStyle}>
         <Container
           textAlign="center"
-          style={{ marginTop: "100px", width: "600px" }}
+          style={{ marginTop: "25px", width: "600px" }}
         >
           <Header textAlign="center" style={{ marginBottom: "15px" }}>
             <Image src={Logo} style={{ width: "150px" }} />

@@ -22,10 +22,9 @@ const style = {
     color: "white"
   },
   divStyle: {
-    height: "250px",
+    height: "225px",
     marginTop: "25px",
     borderRadius: "25px",
-    padding: "15px",
     boxShadow: "5px 10px"
   },
   lightBlueColor: "#1c5aff",
