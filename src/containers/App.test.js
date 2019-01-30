@@ -156,7 +156,7 @@ describe("Login Component", () => {
 
     expect(wrapper.instance().state.hideError).toEqual(false);
     expect(showErrorMessageMethod).toHaveBeenCalledWith(
-      "Type a value to exchange"
+      "It was not possible to get the currencies rates. Check your internet connection"
     );
   });
 
@@ -186,7 +186,7 @@ describe("Login Component", () => {
 
     expect(wrapper.instance().state.hideError).toEqual(false);
     expect(showErrorMessageMethod).toHaveBeenCalledWith(
-      "It was not possible to get the currencies rates. Check your internet connection"
+      "Type a value to exchange"
     );
   });
 
