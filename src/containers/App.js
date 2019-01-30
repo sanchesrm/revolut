@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Container, Header, Image, Button, Message } from "semantic-ui-react";
 import CurrencyContent from "../components/CurrencyContent";
+import PropTypes from "prop-types";
 import { fetchRates, getRatesExchanges } from "../actions/Rates";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -35,7 +36,8 @@ export class App extends Component {
         USD: this.randomCurrencyAmounts()
       },
       inputValues: { 0: "0.00", 1: "0.00" },
-      hideError: true
+      hideError: true,
+      errorMessage: ""
     };
   }
 
@@ -55,57 +57,83 @@ export class App extends Component {
     if (!choosenCurrency.includes(name)) {
       choosenCurrency[position] = name;
       this.setState({ choosenCurrency }, () => {
-        this.props.getRatesExchanges(
-          this.state.choosenCurrency,
-          this.props.RatesReducer
-        );
+        if (this.props.RatesReducer.exchangesRates) {
+          this.props.getRatesExchanges(
+            this.state.choosenCurrency,
+            this.props.RatesReducer
+          );
+        } else {
+          this.showErrorMessage(
+            "It was not possible to get the currencies rates. Check your internet connection"
+          );
+        }
       });
     }
   };
 
   changeHandler = (value, position) => {
-    const oppositePosition = !position ? 1 : 0;
-    let { inputValues } = this.state;
-    inputValues[position] = parseFloat(value);
-    inputValues[oppositePosition] =
-      -1 * value * this.props.RatesReducer.exchangesRates[position];
+    if (this.props.RatesReducer.exchangesRates) {
+      const oppositePosition = !position ? 1 : 0;
+      let { inputValues } = this.state;
+      inputValues[position] = parseFloat(value);
+      inputValues[oppositePosition] =
+        -1 * value * this.props.RatesReducer.exchangesRates[position];
 
-    this.setState({ inputValues });
+      this.setState({ inputValues });
+    } else {
+      this.showErrorMessage(
+        "It was not possible to get the currencies rates. Check your internet connection"
+      );
+    }
   };
 
   exchangeClickHandler = () => {
     let { choosenCurrency, currencyAmounts, inputValues } = this.state;
 
-    let firstValue = currencyAmounts[choosenCurrency[0]] + inputValues[0];
-    let secondValue = currencyAmounts[choosenCurrency[1]] + inputValues[1];
-
-    firstValue = firstValue.toFixed(2);
-    secondValue = secondValue.toFixed(2);
-
-    if (firstValue < 0 || secondValue < 0) {
-      this.setState(
-        {
-          hideError: false
-        },
-        () => {
-          setTimeout(() => {
-            this.setState({
-              hideError: true
-            });
-          }, 3000);
-        }
+    if (!this.props.RatesReducer.exchangesRates) {
+      this.showErrorMessage("Type a value to exchange");
+    } else if (inputValues[0] === "0.00" || inputValues[0] === "0.00") {
+      this.showErrorMessage(
+        "It was not possible to get the currencies rates. Check your internet connection"
       );
     } else {
-      currencyAmounts[choosenCurrency[0]] = parseFloat(firstValue);
-      currencyAmounts[choosenCurrency[1]] = parseFloat(secondValue);
+      let firstValue = currencyAmounts[choosenCurrency[0]] + inputValues[0];
+      let secondValue = currencyAmounts[choosenCurrency[1]] + inputValues[1];
 
-      inputValues = { 0: "0.00", 1: "0.00" };
+      firstValue = firstValue.toFixed(2);
+      secondValue = secondValue.toFixed(2);
 
-      this.setState({
-        currencyAmounts,
-        inputValues
-      });
+      if (firstValue < 0 || secondValue < 0) {
+        this.showErrorMessage("Operation not permitted");
+      } else {
+        currencyAmounts[choosenCurrency[0]] = parseFloat(firstValue);
+        currencyAmounts[choosenCurrency[1]] = parseFloat(secondValue);
+
+        inputValues = { 0: "0.00", 1: "0.00" };
+
+        this.setState({
+          currencyAmounts,
+          inputValues
+        });
+      }
     }
+  };
+
+  showErrorMessage = errorMessage => {
+    this.setState(
+      {
+        hideError: false,
+        errorMessage
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({
+            hideError: true,
+            errorMessage: ""
+          });
+        }, 3000);
+      }
+    );
   };
 
   render() {
@@ -113,7 +141,8 @@ export class App extends Component {
       inputValues,
       choosenCurrency,
       currencyAmounts,
-      hideError
+      hideError,
+      errorMessage
     } = this.state;
     return (
       <div style={styles.divStyle}>
@@ -153,13 +182,18 @@ export class App extends Component {
             error={true}
             hidden={hideError}
           >
-            Operation not permitted
+            {errorMessage}
           </Message>
         </Container>
       </div>
     );
   }
 }
+
+App.propTypes = {
+  fetchRates: PropTypes.func.isRequired,
+  getRatesExchanges: PropTypes.func.isRequired
+};
 
 export const mapStateToProps = ({ RatesReducer }) => {
   return { RatesReducer };
