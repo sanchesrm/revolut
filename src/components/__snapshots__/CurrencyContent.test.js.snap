@@ -291,7 +291,7 @@ exports[`Login Component render correctly 2`] = `
           }
         }
       >
-        $ 1.00 - £ 1
+        $ 1.00 - £ 0
       </div>
     </Segment>
   </SegmentGroup>

@@ -43,7 +43,7 @@ export class CurrencyContent extends Component {
 
     const exchangeRates = this.props.RatesReducer.exchangesRates
       ? RatesReducer.exchangesRates[position].toFixed(2)
-      : 1;
+      : 0.0;
     return (
       <div style={style.currencySubheader}>{`${
         position === 0 ? firstSymbol : secondSymbol
