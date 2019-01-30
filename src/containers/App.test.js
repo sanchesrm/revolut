@@ -136,7 +136,7 @@ describe("Login Component", () => {
     expect(wrapper.instance().state.inputValues).toEqual({ "0": 5, "1": -5 });
   });
 
-  test("should handle click and values === 0.00", () => {
+  test("should handle click but it doesn't have exchangesRates array", () => {
     expect.assertions(2);
 
     const wrapper = shallow(<App {...props} />);
@@ -160,9 +160,45 @@ describe("Login Component", () => {
     );
   });
 
+  test("should handle click and values === 0.00", () => {
+    expect.assertions(2);
+
+    props = {
+      ...props,
+      RatesReducer: {
+        exchangesRates: [1, 2]
+      }
+    };
+    const wrapper = shallow(<App {...props} />);
+    wrapper.instance().setState({
+      currencyAmounts: {
+        GBP: 10,
+        USD: 20
+      },
+      inputValues: { 0: "0.00", 1: "0.00" }
+    });
+    const showErrorMessageMethod = jest.spyOn(
+      wrapper.instance(),
+      "showErrorMessage"
+    );
+
+    wrapper.instance().exchangeClickHandler();
+
+    expect(wrapper.instance().state.hideError).toEqual(false);
+    expect(showErrorMessageMethod).toHaveBeenCalledWith(
+      "It was not possible to get the currencies rates. Check your internet connection"
+    );
+  });
+
   test("should handle click and value < 0", () => {
     expect.assertions(2);
 
+    props = {
+      ...props,
+      RatesReducer: {
+        exchangesRates: [1, 2]
+      }
+    };
     const wrapper = shallow(<App {...props} />);
     wrapper.instance().setState({
       currencyAmounts: {
