@@ -92,7 +92,7 @@ export class App extends Component {
 
     if (!this.props.RatesReducer.exchangesRates) {
       this.showErrorMessage("Type a value to exchange");
-    } else if (inputValues[0] === "0.00" || inputValues[0] === "0.00") {
+    } else if (inputValues[0] === "0.00" || inputValues[1] === "0.00") {
       this.showErrorMessage(
         "It was not possible to get the currencies rates. Check your internet connection"
       );

@@ -7,9 +7,8 @@ exports[`Login Component render correctly 1`] = `
       "backgroundImage": "linear-gradient(to right, #1c5aff, #265ed2)",
       "borderRadius": "25px",
       "boxShadow": "5px 10px",
-      "height": "250px",
+      "height": "225px",
       "marginTop": "25px",
-      "padding": "15px",
     }
   }
 >
@@ -157,9 +156,8 @@ exports[`Login Component render correctly 2`] = `
       "backgroundImage": "linear-gradient(to right, #265ed2, #1c5aff)",
       "borderRadius": "25px",
       "boxShadow": "5px 10px",
-      "height": "250px",
+      "height": "225px",
       "marginTop": "25px",
-      "padding": "15px",
     }
   }
 >

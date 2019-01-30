@@ -9,7 +9,8 @@ describe("Login Component", () => {
     configure({ adapter: new Adapter() });
     props = {
       fetchRates: jest.fn(() => Promise.resolve()),
-      getRatesExchanges: jest.fn(() => Promise.resolve())
+      getRatesExchanges: jest.fn(() => Promise.resolve()),
+      RatesReducer: {}
     };
   });
 
@@ -24,6 +25,8 @@ describe("Login Component", () => {
 
   test("should handle currency change", () => {
     expect.assertions(3);
+
+    props = { ...props, RatesReducer: { exchangesRates: [] } };
 
     const wrapper = shallow(<App {...props} />);
     const getRatesExchangesMethod = jest.spyOn(props, "getRatesExchanges");
@@ -50,6 +53,25 @@ describe("Login Component", () => {
     expect(getRatesExchangesMethod).not.toHaveBeenCalled();
   });
 
+  test("should handle currency change but it shouldn't have a exchangesRates array", () => {
+    expect.assertions(3);
+
+    props = { ...props, RatesReducer: {} };
+
+    const wrapper = shallow(<App {...props} />);
+    const showErrorMessageMethod = jest.spyOn(
+      wrapper.instance(),
+      "showErrorMessage"
+    );
+
+    expect(wrapper.instance().state.choosenCurrency).toEqual(["GBP", "USD"]);
+
+    wrapper.instance().handleCurrencyChoose("EUR", 1);
+
+    expect(wrapper.instance().state.choosenCurrency).toEqual(["GBP", "EUR"]);
+    expect(showErrorMessageMethod).toHaveBeenCalled();
+  });
+
   test("should handle value typing", () => {
     expect.assertions(2);
     props = {
@@ -69,6 +91,28 @@ describe("Login Component", () => {
     wrapper.instance().changeHandler(5, 1);
 
     expect(wrapper.instance().state.inputValues).toEqual({ "0": -10, "1": 5 });
+  });
+
+  test("should handle value typing but it doesn't have exchangesRates array", () => {
+    expect.assertions(2);
+    props = {
+      ...props,
+      RatesReducer: {}
+    };
+
+    const wrapper = shallow(<App {...props} />);
+    const showErrorMessageMethod = jest.spyOn(
+      wrapper.instance(),
+      "showErrorMessage"
+    );
+
+    expect(wrapper.instance().state.inputValues).toEqual({
+      0: "0.00",
+      1: "0.00"
+    });
+
+    wrapper.instance().changeHandler(5, 1);
+    expect(showErrorMessageMethod).toHaveBeenCalled();
   });
 
   test("should handle value typing - position 0", () => {
@@ -92,8 +136,8 @@ describe("Login Component", () => {
     expect(wrapper.instance().state.inputValues).toEqual({ "0": 5, "1": -5 });
   });
 
-  test("should handle click and value < 0", () => {
-    expect.assertions(1);
+  test("should handle click and values === 0.00", () => {
+    expect.assertions(2);
 
     const wrapper = shallow(<App {...props} />);
     wrapper.instance().setState({
@@ -103,15 +147,48 @@ describe("Login Component", () => {
       },
       inputValues: { 0: 30.0, 1: -30.0 }
     });
+    const showErrorMessageMethod = jest.spyOn(
+      wrapper.instance(),
+      "showErrorMessage"
+    );
 
     wrapper.instance().exchangeClickHandler();
 
     expect(wrapper.instance().state.hideError).toEqual(false);
+    expect(showErrorMessageMethod).toHaveBeenCalledWith(
+      "Type a value to exchange"
+    );
+  });
+
+  test("should handle click and value < 0", () => {
+    expect.assertions(2);
+
+    const wrapper = shallow(<App {...props} />);
+    wrapper.instance().setState({
+      currencyAmounts: {
+        GBP: 10,
+        USD: 20
+      },
+      inputValues: { 0: 40.0, 1: -40.0 }
+    });
+    wrapper.instance().forceUpdate();
+    const showErrorMessageMethod = jest.spyOn(
+      wrapper.instance(),
+      "showErrorMessage"
+    );
+
+    wrapper.instance().exchangeClickHandler();
+
+    expect(wrapper.instance().state.hideError).toEqual(false);
+    expect(showErrorMessageMethod).toHaveBeenCalledWith(
+      "Operation not permitted"
+    );
   });
 
   test("should handle click and value > 0", () => {
     expect.assertions(3);
 
+    props = { ...props, RatesReducer: { exchangesRates: [] } };
     const wrapper = shallow(<App {...props} />);
     wrapper.instance().setState({
       currencyAmounts: {
